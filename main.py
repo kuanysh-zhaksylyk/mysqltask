@@ -22,10 +22,12 @@ class SalesReportGenerator:
         """Establishes a connection to the MySQL database."""
         return mysql.connector.connect(**self.config)
 
-    def _fetch_data_from_database(self, connection: mysql.connector.connection.MySQLConnection) -> pd.DataFrame:
+    def _fetch_data_from_database(
+        self, connection: mysql.connector.connection.MySQLConnection
+    ) -> pd.DataFrame:
         """Fetches data for 2020 from the MySQL database."""
         query = """
-        SELECT products.product_code, MONTH(order_date) AS month, 
+        SELECT products.product_code, MONTH(order_date) AS month,
               SUM(sales_qty * sales_amount) AS total_sales
         FROM transactions
         JOIN products ON transactions.product_code = products.product_code
@@ -55,18 +57,21 @@ class SalesReportGenerator:
             df (pd.DataFrame): DataFrame containing sales data for products in 2020.
         """
         plt.figure(figsize=(12, 6))
-        for product, data in df.groupby('product_code'):
-            plt.plot(data['month'], data['total_sales'], label=f'Product {product}')
+        for product, data in df.groupby("product_code"):
+            plt.plot(data["month"], data["total_sales"], label=f"Product {product}")
 
-        plt.xlabel('Month')
-        plt.ylabel('Sales')
-        plt.title('Monthly Sales Trend for Each Product in 2020')
+        plt.xlabel("Month")
+        plt.ylabel("Sales")
+        plt.title("Monthly Sales Trend for Each Product in 2020")
         plt.legend()
         plt.grid(True)
-        plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+        plt.xticks(
+            range(1, 13),
+            ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        )
         plt.tight_layout()
         plt.show()
-        
+
 
 if __name__ == "__main__":
     logging.basicConfig(
@@ -91,15 +96,10 @@ if __name__ == "__main__":
         raise Exception("Doesn't load credentials from .env")
 
     # Создание конфигурационного словаря
-    config = {
-        'host': DB_HOST,
-        'user': DB_USER,
-        'password': DB_PASSWORD,
-        'database': DB_NAME
-    }
-        
+    config = {"host": DB_HOST, "user": DB_USER, "password": DB_PASSWORD, "database": DB_NAME}
+
     report_generator = SalesReportGenerator(config)
-    
+
     logging.info("Starting data loading process")
     try:
         sales_data = report_generator.generate_sales_report()
