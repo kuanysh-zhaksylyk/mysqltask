@@ -14,9 +14,9 @@ The data set consists 1 .sql script.
 --------
 ## The schema in Power BI
 --------
-(/images/image_schema.png)
+![](/images/image_schema.png)
 ## The Dashboards
-(/images/sales_reports.png)
+![](/images/sales_reports.png)
 
 --------
 ## Other:
